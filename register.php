@@ -68,7 +68,7 @@ foreach ($errors as $error) {
     <input type="password" name="password"><br><br>
 
     <label>Confirm Password:</label><br>
-    <input type="password" name="confirm_password"><br><br>
+    <input type="password" name="confirmPassword"><br><br>
 
     <button type="submit">Register</button>
 </form>

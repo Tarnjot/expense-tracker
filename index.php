@@ -17,7 +17,7 @@ $stmt = $pdo->prepare("
     FROM expenses
     JOIN categories ON expenses.category_id = categories.id
     WHERE expenses.user_id = ?
-    ORDER BY date DESC
+    ORDER BY expense_date DESC
 ");
 
 $stmt->execute([$_SESSION['user']['id']]);
@@ -31,7 +31,8 @@ $expenses = $stmt->fetchAll();
 <?php endif; ?>
 
 <p>
-    <a href="add_expense.php">+ Add New Expense</a> |
+    <a href="create_expense.php">+ Add New Expense</a> |
+    <a href="manage_categories.php">Manage Categories</a> |
     <a href="logout.php">Logout</a>
 </p>
 
@@ -47,7 +48,7 @@ $expenses = $stmt->fetchAll();
         </tr>
         <?php foreach ($expenses as $expense): ?>
             <tr>
-                <td><?= htmlspecialchars($expense['date']) ?></td>
+                <td><?= htmlspecialchars($expense['expense_date']) ?></td>
                 <td><?= number_format($expense['amount'], 2) ?></td>
                 <td><?= htmlspecialchars($expense['category_name']) ?></td>
                 <td><?= htmlspecialchars($expense['description']) ?></td>
@@ -55,5 +56,5 @@ $expenses = $stmt->fetchAll();
         <?php endforeach; ?>
     </table>
 <?php else: ?>
-    <p> No expenses yet. <a href="add_expense.php">add one now</a>.</p>
+    <p> No expenses yet. <a href="create_expense.php">add one now</a>.</p>
 <?php endif; ?>

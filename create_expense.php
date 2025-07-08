@@ -11,7 +11,7 @@ $errors = [];
 $amount = '';
 $category_id = '';
 $description = '';
-$date = date('Y-m-d');
+$expense_date = date('Y-m-d');
 
 $catStmt = $pdo->prepare("SELECT * FROM categories");
 $catStmt->execute();
@@ -21,9 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $amount = trim($_POST['amount'] ?? '');
     $category_id = $_POST['category_id'] ?? '';
     $description = trim($_POST['description'] ?? '');
-    $date = $_POST['date'] ?? date('Y-m-d');
+    $expense_date = $_POST['expense_date'] ?? date('Y-m-d');
 
-    if ($amount === '' || $category_id === '' || $date === '') {
+    if ($amount === '' || $category_id === '' || $expense_date === '') {
         $errors[] = 'Amount, category, and date are required.';
     }
 
@@ -32,13 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        $stmt = $pdo->prepare("INSERT INTO expenses (user_id, category_id, amount, description, date) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO expenses (user_id, category_id, amount, description, expense_date) VALUES (?, ?, ?, ?, ?)");
         $stmt->execute([
             $_SESSION['user']['id'],
             $category_id,
             $amount,
             $description,
-            $date
+            $expense_date
         ]);
 
         $_SESSION['success'] = 'Expense Added!';
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <form method="post">
     <label>Amount:</label><br>
-    <input type="text" name="amount" value="<?= htmlspecialchars($amount) ?>" required><br><br>
+    <input type="number" name="amount" value="<?= htmlspecialchars($amount) ?>" required><br><br>
 
     <label>Category:</label><br>
     <select name="category_id">
@@ -72,7 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <textarea name="description"><?= htmlspecialchars($description) ?></textarea><br><br>
 
     <label>Date:</label><br>
-    <input type="date" name="date" value="<?= htmlspecialchars($date) ?>" required><br><br>
+    <input type="date" name="expense_date" value="<?= htmlspecialchars($expense_date) ?>" required><br><br>
 
     <button type="submit">Add Expense</button>
 </form>
+    <a href="index.php">Go Back</a>
