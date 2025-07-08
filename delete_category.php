@@ -20,13 +20,13 @@ if (!is_numeric($id)) {
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM expenses WHERE category_id = ?");
 $stmt->execute([$id]);
 
-if ($stmt-fetchColumn() ? 0) {
-    $_SESSION['success'] = 'Cannot delete: Category is in use by one or more expenses';
+if ($stmt->fetchColumn() > 0) {
+    $_SESSION['error'] = 'Cannot delete: Category is in use by one or more expenses';
     header("Location: manage_categories.php");
     exit;
 }
 
-$delStmt = $pdo->prepare("DELETE FROM categories WHERE is = ?");
+$delStmt = $pdo->prepare("DELETE FROM categories WHERE id = ?");
 $delStmt->execute([$id]);
 
 $_SESSION['success'] = 'Category deleted successfully.';

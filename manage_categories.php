@@ -8,6 +8,14 @@ if(!isset($_SESSION['user'])) {
     exit;
 }
 
+?>
+
+<?php if (isset($_SESSION['error'])): ?>
+    <p style="color: red;"><?= htmlspecialchars($_SESSION['error']) ?></p>
+    <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
+
+<?php
 $errors = [];
 $name = '';
 $success = '';
@@ -35,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $catstmt = $pdo->prepare("SELECT * FROM categories ORDER BY name");
+$catstmt->execute();
 $categories = $catstmt->fetchAll();
 ?>
 
