@@ -16,11 +16,11 @@ if (!isset($_GET['id'])) {
 
 $id = $_GET['id'];
 
-$stmt = $pdo->prepare("SELECT * FROM expenses WHERE id = ? AND user_ id = ?");
+$stmt = $pdo->prepare("SELECT * FROM expenses WHERE id = ? AND user_id = ?");
 $stmt->execute([$id, $_SESSION['user']['id']]);
 $expense = $stmt->fetch();
 
-if (!expense) {
+if (!$expense) {
     $_SESSION['error'] = "Expense not found or access denied.";
     header("Location: index.php");
     exit;
@@ -34,7 +34,7 @@ $categories = $catstmt->fetchAll();
 
 <h2>Edit Expense</h2>
 
-<?php if ($isset($_SESSION['error'])): ?>
+<?php if (isset($_SESSION['error'])): ?>
     <p style="color:red"><?= $_SESSION['error'] ?></p>
     <?php unset($_SESSION['error']); ?>
 <?php endif; ?>
@@ -69,10 +69,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     $description = $_POST['description'];
     $created_at = $_POST['created_at'];
 
-    if ($amount <= 0 || empty($date)) {
+    if ($amount <= 0 || empty($created_at)) {
         $_SESSION['error'] = "Amount must be greater than zero and date is required.";
     } else {
-        $update = $pdo->prepare("UPDATE expense SET amount = ?, category_id = ?, description = ?, created_at = ? WHERE id = ? AND user_id = ?");
+        $update = $pdo->prepare("UPDATE expenses SET amount = ?, category_id = ?, description = ?, created_at = ? WHERE id = ? AND user_id = ?");
         $updated = $update->execute([$amount, $category_id, $description, $created_at, $id, $_SESSION['user']['id']]);
 
         if ($updated) {

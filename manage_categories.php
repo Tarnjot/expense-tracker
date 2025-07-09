@@ -27,23 +27,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($name == '') {
         $errors[] = 'Category name is required.';
     } else {
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM categories WHERE name = ?");
-        $stmt->execute([$name]);
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM categories WHERE name = ? AND user_id = ?");
+        $stmt->execute([$name, $_SESSION['user']['id']]);
         if ($stmt->fetchColumn() > 0) {
             $errors[] = 'Category already exists.';
         }
     }
 
     if (empty($errors)) {
-        $stmt = $pdo->prepare("INSERT INTO categories (name) VALUES (?)");
-        $stmt->execute([$name]);
+        $stmt = $pdo->prepare("INSERT INTO categories (name, user_id) VALUES (?, ?)");
+        $stmt->execute([$name, $_SESSION['user']['id']]);
         $success = 'Category added successfully';
         $name = '';
     }
 }
 
-$catstmt = $pdo->prepare("SELECT * FROM categories ORDER BY name");
-$catstmt->execute();
+$catstmt = $pdo->prepare("SELECT * FROM categories WHERE user_id = ? ORDER BY name");
+$catstmt->execute([$_SESSION['user']['id']]);
 $categories = $catstmt->fetchAll();
 ?>
 
@@ -73,10 +73,13 @@ $categories = $catstmt->fetchAll();
         <tr>
             <td><?= htmlspecialchars($cat['name']) ?></td>
             <td>
+                <a href="editCategory.php?id=<?= $cat['id'] ?>">Edit</a> |
                 <a href="delete_category.php?id=<?= $cat['id'] ?>" onclick="return confirm('Are you sure you want to delete this category?');">Delete</a>
             </td>
         </tr>
     <?php endforeach; ?>
 </table>
+
+
 
 <p><a href="index.php">← Back to Dashboard</a></p>

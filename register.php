@@ -72,3 +72,5 @@ foreach ($errors as $error) {
 
     <button type="submit">Register</button>
 </form>
+
+<a href="login.php"> Login here </a>
