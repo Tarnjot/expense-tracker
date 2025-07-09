@@ -53,7 +53,8 @@ $expenses = $stmt->fetchAll();
                 <td><?= htmlspecialchars($expense['category_name']) ?></td>
                 <td><?= htmlspecialchars($expense['description']) ?></td>
                 <td>
-                <a href="delete_expense.php?id=<?= $expense['id'] ?>" onclick="return confirm('Are you sure you want to delete this expense?');">Delete</a>
+                    <a href="editExpense.php?id=<?= $expense['id'] ?>">Edit</a> |
+                    <a href="delete_expense.php?id=<?= $expense['id'] ?>" onclick="return confirm('Are you sure you want to delete this expense?');">Delete</a>
                 </td>
             </tr>
         <?php endforeach; ?>

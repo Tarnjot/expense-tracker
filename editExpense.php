@@ -2,7 +2,7 @@
 
 session_start();
 
-require_once 'include/db.php';
+require_once 'includes/db.php';
 
 if (!isset($_SESSION['user'])) {
     header("Location: login.php");
@@ -56,7 +56,7 @@ $categories = $catstmt->fetchAll();
     <input type="text" name="description" value="<?= htmlspecialchars($expense['description']) ?>"><br>
 
     <label>Created At:</label>
-    <input type="date" name="created_at" value="<?= htmlspecialchars($expense['date']) ?>" required><br>
+    <input type="date" name="expense_date" value="<?= htmlspecialchars($expense['expense_date']) ?>" required><br>
 
     <button type="submit" name="update">Update Expense</button>
 </form>
@@ -67,13 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     $amount = $_POST['amount'];
     $category_id = $_POST['category_id'];
     $description = $_POST['description'];
-    $created_at = $_POST['created_at'];
+    $expense_date = $_POST['expense_date'];
 
-    if ($amount <= 0 || empty($created_at)) {
+    if ($amount <= 0 || empty($expense_date)) {
         $_SESSION['error'] = "Amount must be greater than zero and date is required.";
     } else {
-        $update = $pdo->prepare("UPDATE expenses SET amount = ?, category_id = ?, description = ?, created_at = ? WHERE id = ? AND user_id = ?");
-        $updated = $update->execute([$amount, $category_id, $description, $created_at, $id, $_SESSION['user']['id']]);
+        $update = $pdo->prepare("UPDATE expenses SET amount = ?, category_id = ?, description = ?, expense_date = ? WHERE id = ? AND user_id = ?");
+        $updated = $update->execute([$amount, $category_id, $description, $expense_date, $id, $_SESSION['user']['id']]);
 
         if ($updated) {
             $_SESSION['success'] = "Expense updated successfully!";
