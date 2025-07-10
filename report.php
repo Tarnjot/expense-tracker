@@ -65,6 +65,11 @@ $categoryTotals = $catstmt->fetchAll();
             </tr>
         <?php endforeach; ?>
 
+        <tr style="font-weight: bold;">
+            <td>Total</td>
+            <td>£<?= number_format($total, 2) ?></td>
+        </tr>
+
     </table>
 
     <!-- Chart container -->
@@ -119,7 +124,9 @@ $categoryTotals = $catstmt->fetchAll();
 
 
 <p>
-    <a href="export.php?from=<?= urlencode($from) ?>&to=<?= urlencode($to) ?>">Download CSV</a>
+    <a href="export_csv.php?from=<?= urlencode($from) ?>&to=<?= urlencode($to) ?>" target="_blank">
+        <button type="button">Download CSV Report</button>
+    </a>
 </p>
 
 <p><a href="index.php">← Back to Dashboard</a></p>
