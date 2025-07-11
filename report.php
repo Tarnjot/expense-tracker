@@ -1,3 +1,73 @@
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background-color: #f8f9fa;
+    }
+
+    h2 {
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    label {
+        margin-right: 10px;
+    }
+
+    input[type="date"] {
+        padding: 6px;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        padding: 6px 12px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f1f1f1;
+    }
+
+    .chart-container {
+        max-width: 500px;
+        margin: 30px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+</style>
+
+
 <?php
 
 session_start();
@@ -53,7 +123,7 @@ $categoryTotals = $catstmt->fetchAll();
 
 <h4>Spending by Category</h4>
 <?php if (count($categoryTotals) > 0): ?>
-    <table border="1" cellpadding="8" cellspacing="0">
+    <table>
         <tr>
             <th>Category</th>
             <th>Total Spent</th>
@@ -74,7 +144,7 @@ $categoryTotals = $catstmt->fetchAll();
 
     <!-- Chart container -->
 
-    <div style="max-width: 500px; margin-top: 20px;">
+    <div class="chart-container">
         <canvas id="categoryChart"></canvas>
     </div>
 
@@ -84,8 +154,7 @@ $categoryTotals = $catstmt->fetchAll();
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    const ctx = document.createElement('canvas');
-    document.body.appendChild(ctx);
+    const ctx = document.getElementById('categoryChart').getContext('2d');
 
     const data = {
         labels: <?= json_encode(array_column($categoryTotals, 'category')) ?>,
@@ -123,10 +192,10 @@ $categoryTotals = $catstmt->fetchAll();
 <?php endif; ?>
 
 
-<p>
-    <a href="export_csv.php?from=<?= urlencode($from) ?>&to=<?= urlencode($to) ?>" target="_blank">
-        <button type="button">Download CSV Report</button>
-    </a>
-</p>
+<form method="GET" action="export_csv.php" target="_blank" style="margin-top: 20px;">
+    <input type="hidden" name="from" value="<?= htmlspecialchars($from) ?>">
+    <input type="hidden" name="to" value="<?= htmlspecialchars($to) ?>">
+    <button type="submit">Download CSV Report</button>
+</form>
 
 <p><a href="index.php">← Back to Dashboard</a></p>
