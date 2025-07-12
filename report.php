@@ -107,6 +107,17 @@ $catstmt = $pdo->prepare("
 
 $catstmt->execute([$userId, $from, $to]);
 $categoryTotals = $catstmt->fetchAll();
+
+$monthlystmt = $pdo->prepare("
+    SELECT DATE_FORMAT(expense_date, '%Y-%m') AS month, SUM(amount) AS total
+    FROM expenses
+    WHERE user_id = ?
+    GROUP BY month
+    ORDER BY month DESC
+");
+
+$monthlystmt->execute([$userId]);
+$monthlyTotals = $monthlystmt->fetchAll();
 ?>
 
 <h2>Expense Summary Report</h2>
@@ -142,10 +153,31 @@ $categoryTotals = $catstmt->fetchAll();
 
     </table>
 
+    <h5>Monthly Overview</h4>
+    <?php if (count($monthlyTotals) > 0): ?>
+        <table>
+            <tr>
+                <th>Month</th>
+                <th>Total Spent</th>
+            </tr>
+            <?php foreach ($monthlyTotals as $row): ?>
+                <tr>
+                    <td><?= htmlspecialchars(date('F Y', strtotime($row['month'] . '-01'))) ?></td>
+                    <td>£<?= number_format($row['total'], 2) ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php else: ?>
+        <p>No monthly data available.</p>
+    <?php endif; ?>
+
+    
+
     <!-- Chart container -->
 
     <div class="chart-container">
         <canvas id="categoryChart"></canvas>
+        <canvas id="monthlyChart"></canvas>
     </div>
 
 
@@ -190,6 +222,45 @@ $categoryTotals = $catstmt->fetchAll();
 <?php else: ?>
     <p>No expenses found for this range.</p>
 <?php endif; ?>
+
+<script>
+    const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+
+    const monthlyData = {
+        labels: <?= json_encode(array_map(function($row) {
+            return date('M Y', strtotime($row['month'] . '-01'));
+        }, $monthlyTotals)) ?>,
+        datasets: [{
+            label: 'Monthly Spending (£)',
+            data: <?= json_encode(array_column($monthlyTotals, 'total')) ?>,
+            backgroundColor: '#36A2EB',
+            borderColor: '#1d75bd',
+            borderWidth: 1
+        }]
+    };
+
+    new Chart(monthlyCtx, {
+        type: 'bar',
+        data: monthlyData,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Spending Per Month'
+                }
+            }
+        }
+    });
+</script>
 
 
 <form method="GET" action="export_csv.php" target="_blank" style="margin-top: 20px;">
