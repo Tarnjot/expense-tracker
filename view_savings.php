@@ -42,7 +42,7 @@ $savings = $stmt->fetchAll();
                 <td><?= $progressPercent ?>%</td>
                 <td><?= htmlspecialchars($saving['created_at']) ?></td>
                 <td>
-                    <a href="editSaving.php?id=<?= $saving['id'] ?>">Edit</a> |
+                    <a href="edit_saving.php?id=<?= $saving['id'] ?>">Edit</a> |
                     <a href="delete_Saving.php?id=<?= $saving['id'] ?>" onclick="return confirm('Are you sure you want to delete this expense?');">Delete</a>
                 </td>
             </tr>
@@ -52,3 +52,4 @@ $savings = $stmt->fetchAll();
     <p> No savings yet. <a href="add_saving.php">add one now</a>.</p>
 <?php endif; ?>
 
+<a href="index.php">Back to index</a>

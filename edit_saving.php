@@ -41,7 +41,7 @@ if (!$saving) {
     <input type="number" name="target_amount" min="0.1" step="0.01" value="<?= htmlspecialchars($saving['target_amount']) ?>" required><br>
 
     <label>Saved Amount</label><br>
-    <input type="number" name="saved_amount" value="<?= htmlspecialchars($saving['saved_amount']) ?>" readonly><br>
+    <input type="number" name="saved_amount" value="<?= htmlspecialchars($saving['saved_amount']) ?>" ><br>
 
     <label>Created At</label><br>
     <input type="date" name="created_at" value="<?= date('Y-m-d', strtotime($saving['created_at'])) ?>"><br>
@@ -60,8 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     if (empty($title) || empty($target_amount)) {
         $_SESSION['error'] = "Title or target amount cannot be empty.";
     } else {
-        $update = $pdo->prepare("UPDATE savings SET title = ?, target_amount = ?, created_at = ? WHERE id = ? AND user_id = ?");
-        $updated = $update->execute([$title, $target_amount, $created_at, $id, $_SESSION['user']['id']]);
+        $update = $pdo->prepare("UPDATE savings SET title = ?, target_amount = ?, saved_amount = ?, created_at = ? WHERE id = ? AND user_id = ?");
+        $updated = $update->execute([$title, $target_amount, $saved_amount, $created_at, $id, $_SESSION['user']['id']]);
 
         if ($updated) {
             $_SESSION['success'] = "Saving updated successfully";
@@ -72,3 +72,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
         }
     }
 }
+?>
+<a href="view_savings.php">Back to view savings</a>

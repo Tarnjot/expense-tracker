@@ -109,7 +109,7 @@ $catstmt->execute([$userId, $from, $to]);
 $categoryTotals = $catstmt->fetchAll();
 
 $monthlystmt = $pdo->prepare("
-    SELECT DATE_FORMAT(expense_date, '%Y-%m') AS month, SUM(amount) AS total
+    SELECT strftime('%Y-%m', expense_date) AS month, SUM(amount) AS total
     FROM expenses
     WHERE user_id = ?
     GROUP BY month

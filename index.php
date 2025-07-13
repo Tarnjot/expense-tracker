@@ -33,6 +33,7 @@ $expenses = $stmt->fetchAll();
 <p>
     <a href="create_expense.php">+ Add New Expense</a> |
     <a href="manage_categories.php">Manage Categories</a> |
+    <a href="view_savings.php">View Savings</a> |
     <a href="report.php">📊 View Report</a> |
     <a href="logout.php">Logout</a>
 </p>
